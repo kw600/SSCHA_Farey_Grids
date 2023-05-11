@@ -18,7 +18,7 @@ for i in range(len(lte)):
 	path  = lte[i]
 	#generate the position file and force.dat for two smaller cells
 	subprocess.run(["python", "generate_R.py", path])
-	subprocess.run(["q2r",path,dyn_name[i]])
+	subprocess.run(["bash","q2r",path,dyn_name[i]])
 	subprocess.run(["python", "normal_to_force.py", path])
 	print('finish generating force.dat for '+path)
 
