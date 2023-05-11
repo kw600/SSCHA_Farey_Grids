@@ -3,12 +3,8 @@ import subprocess
 
 
 
-output_path = ['target_121212']
+output_path = 'target_666'
 
-try:
-	os.mkdir(output_path)
-except:
-	pass
 
 lte=['333','444']
 #sscha final dyn matrix name
