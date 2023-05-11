@@ -23,7 +23,7 @@ subprocess.run(["python", "generate_R.py", output_path])
 print('finish generating position file for '+output_path)
 
 #read the input from two smaller cells and generate dynamical matrix for the target large cell to the output_path
-subprocess.run(["python", "vcF2A.py", path,output_path])
+subprocess.run(["python", "vcF2A.py", str(lte),output_path])
 print('finish generating dynamical matrix for '+output_path)
 
 # use fortran code to generate force.dat for the target large cell

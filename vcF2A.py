@@ -114,6 +114,9 @@ def extend_bz_points(points_bz_direct):
 
 dim = 3
 lte_list = ast.literal_eval(sys.argv[1])
+lte_list = [str(i) for i in lte_list]
+
+# print(lte_list,'lte')
 path = './'
 num_atoms = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=np.int64, comments=['#', '$', '@'], max_rows=1)
 M = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=1)
