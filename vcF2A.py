@@ -12,7 +12,7 @@ from voronoiBZ import soft_bounded_voronoi, unique_rows, buffer_hull, in_hull
 from numpy.linalg import eigvalsh
 from fractions import Fraction
 from auxiliary import kPath
-import sys
+import sys,ast
 
 
 def direct2cartesian(point, lattice):
@@ -113,15 +113,15 @@ def extend_bz_points(points_bz_direct):
     return points_direct
 
 dim = 3
-lte_list = ['333','444']
-path = sys.argv[1]
-num_atoms = np.loadtxt(path+lte_list[0]+"/equilibrium.dat", dtype=np.int64, comments=['#', '$', '@'], max_rows=1)
-M = np.loadtxt(path+lte_list[0]+"/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=1)
+lte_list = ast.literal_eval(sys.argv[1])
+path = './'
+num_atoms = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=np.int64, comments=['#', '$', '@'], max_rows=1)
+M = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=1)
 
 #Regardless of the dimensionality of the system, one needs a 3D lattice so that spglib can work
-lattice_given_3d = np.loadtxt(path+lte_list[0]+"/lattice.dat", dtype=np.float64, comments=['#', '$', '@'])#, usecols=range(dim), max_rows=dim)
-positions_given_cart = np.loadtxt(path+lte_list[0]+"/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=(2,3,4))
-atom_types_given_str = np.loadtxt(path+lte_list[0]+"/equilibrium.dat", dtype=str, comments=['#', '$', '@'], skiprows=1, usecols=0)
+lattice_given_3d = np.loadtxt(lte_list[0]+"/lattice.dat", dtype=np.float64, comments=['#', '$', '@'])#, usecols=range(dim), max_rows=dim)
+positions_given_cart = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=(2,3,4))
+atom_types_given_str = np.loadtxt(lte_list[0]+"/equilibrium.dat", dtype=str, comments=['#', '$', '@'], skiprows=1, usecols=0)
 
 positions_given_direct = cartesian2direct(positions_given_cart, lattice_given_3d)
 type2int = dict([(y, x) for x, y in enumerate(sorted(set(atom_types_given_str)))])
