@@ -74,7 +74,7 @@ def get_charge(i_path,index):
 			return lines[i:i+17]
 
 def get_reduced_lattice():
-	with open(f'./{supercell}/harmonic_{supercell}_dyn1','r') as f3:
+	with open(f'./{path}/harmonic_{supercell}_1','r') as f3:
 		lines=f3.readlines()
 		for i in range(len(lines)):
 			if 'Basis vectors' in lines[i]:
@@ -122,9 +122,9 @@ Basis vectors
 				f.write(f'{ll}')
 
 if __name__=='__main__':
-	supercell=sys.argv[1]
-	script_dir = f'./{supercell}'
 	
+	script_dir = sys.argv[1]; path = script_dir
+	supercell = sys.argv[1].split('_')[-1]
 	dim = 3		# dimension of the system	
 	lattice = np.loadtxt(script_dir + "/lattice.dat", dtype=np.float64, comments=['#', '$', '@'])#, usecols=range(dim), max_rows=dim)
 	reciprocal_lattice = np.linalg.inv(lattice).T	
@@ -152,8 +152,9 @@ if __name__=='__main__':
 	R[indices[:, 0], indices[:, 1], indices[:, 2], indices[:, 3]] = values.tolist()
 
 	alat=8.7523599
+
 	for i in range(1,17):
-		i_path=f'./{supercell}/harmonic_666_dyn'
+		i_path=f'./path/harmonic_{supercell}_dyn'
 		q=qpoint(i_path,i)
 		print(i,len(q))
 		print(np.dot(q,get_reduced_lattice()))
