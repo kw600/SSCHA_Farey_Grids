@@ -1,4 +1,6 @@
 from testfouier import *
+import numpy as np
+import sys
 
 def generate_dyn_qe(k, C, R, M):
 	#Note that k is in cartesian coordinates and needs to be devided by alat
@@ -120,7 +122,7 @@ Basis vectors
 				f.write(f'{ll}')
 
 if __name__=='__main__':
-	supercell='666'
+	supercell=sys.argv[1]
 	script_dir = f'./{supercell}'
 	
 	dim = 3		# dimension of the system	

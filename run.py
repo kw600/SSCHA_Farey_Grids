@@ -28,10 +28,10 @@ print('finish generating dynamical matrix for '+output_path)
 
 # use fortran code to generate force.dat for the target large cell
 os.chdir(output_path)
-subprocess.run(["./a.out"])
+subprocess.run(["../a.out"])
 os.chdir("..")
 print('finish generating force.dat for '+output_path)
 
 # transform the force.dat into qe format. Possible to use mpi4py to speed up the process for large supercell
-subprocess.run(["python", "farey2qe.py", path,output_path])
+subprocess.run(["python", "farey2qe.py", path])
 print('finish generating qe format dynamical for '+output_path)
