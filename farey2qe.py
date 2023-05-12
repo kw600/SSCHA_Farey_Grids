@@ -54,8 +54,8 @@ def generate_dyn_qe(k, C, R, M):
 # 	return D_q
 
 
-def qpoint(path,index):
-	with open(f'{path}{index}','r') as f:
+def qpoint(input_path,index):
+	with open(f'{input_path}{index}','r') as f:
 		lines = f.readlines()
 	q=[]
 	for i in range(len(lines)):
@@ -74,7 +74,7 @@ def get_charge(i_path,index):
 			return lines[i:i+17]
 
 def get_reduced_lattice():
-	with open(f'./{path}/harmonic_{supercell}_1','r') as f3:
+	with open(f'./{path}/harmonic_{supercell}_dyn1','r') as f3:
 		lines=f3.readlines()
 		for i in range(len(lines)):
 			if 'Basis vectors' in lines[i]:
@@ -154,10 +154,10 @@ if __name__=='__main__':
 	alat=8.7523599
 
 	for i in range(1,17):
-		i_path=f'./path/harmonic_{supercell}_dyn'
+		i_path=f'./{path}/harmonic_{supercell}_dyn'
 		q=qpoint(i_path,i)
 		print(i,len(q))
 		print(np.dot(q,get_reduced_lattice()))
-		o_path = i_path + 'f2q_'
+		o_path = f'./{path}/' + 'f2q_'
 		output(q,i_path,o_path,i)
 		print(f'file {o_path}{i} done')
