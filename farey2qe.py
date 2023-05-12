@@ -135,6 +135,8 @@ if __name__=='__main__':
 	grids_size = np.loadtxt(script_dir + "/grid.dat", dtype=np.int64, comments=['#', '$', '@'], usecols=range(dim), max_rows=1)
 	num_cell = np.prod(grids_size)
 
+	ibz = np.loadtxt(script_dir + "/ibz.dat")
+
 	data = np.loadtxt(script_dir + '/force.dat')
 	indices = data[:, :5].astype(int) - 1  # subtract 1 to convert to 0-based indexing
 	values = data[:, 5]
@@ -153,7 +155,7 @@ if __name__=='__main__':
 
 	alat=8.7523599
 
-	for i in range(1,17):
+	for i in range(1,len(ibz)+1):
 		i_path=f'./{path}/harmonic_{supercell}_dyn'
 		q=qpoint(i_path,i)
 		print(i,len(q))
