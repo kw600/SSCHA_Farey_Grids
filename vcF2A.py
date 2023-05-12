@@ -372,13 +372,13 @@ ibz_point_indicators = mark_symmetry_images(np.dot(q_points_direct, pri2con[0:di
 savt_weight = get_savt_weight(q_points, voronoi_cells, ibz_point_indicators)
 print(savt_weight/savt_weight[0])
 
-with open(grid_target + "/lte" + "/ibz.dat", 'w') as f:
+with open(grid_target  + "/ibz.dat", 'w') as f:
     for i in range(len(q_target_ibz_pri[:, 0:dim])):
         multiplicity = round(savt_weight[i] / savt_weight[0])
         f.write("%.17g %.17g %.17g %d\n" %(q_target_ibz_pri[i, 0], q_target_ibz_pri[i, 1], q_target_ibz_pri[i, 2], multiplicity))
 f.close()
 
-with open(grid_target + "/lte" + "/kpoint_to_supercell.dat", 'a') as f:
+with open(grid_target  + "/kpoint_to_supercell.dat", 'a') as f:
     for i in range(len(q_target_ibz_pri[:, 0:dim])):
         f.write("%.17g %.17g %.17g %d\n" %(q_target_ibz_pri[i, 0], q_target_ibz_pri[i, 1], q_target_ibz_pri[i, 2], i+1))
 f.close()
