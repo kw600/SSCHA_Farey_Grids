@@ -1,0 +1,9 @@
+#!/bin/bash
+module load quantum_espresso
+cat > q2r.in << EOF
+&input
+ fildyn='./$1/$2',
+ zasr='simple',
+ flfrc='format2.txt'
+/
+q2r.x < q2r.in 
