@@ -171,7 +171,7 @@ for indicator in lte_list:
     grids_sizes.append(grids_size)
 
     #Regardless of the dimensionality of the system, one needs a 3D q points so that brille can work
-    q_points_per_grid = np.loadtxt(indicator+"/ibz.dat", dtype=np.float64, comments=['#', '$', '@'], usecols=range(3))
+    q_points_per_grid = np.loadtxt(indicator+"/ibz0.dat", dtype=np.float64, comments=['#', '$', '@'], usecols=range(3))
     q_points_3d.append(q_points_per_grid)
 
     C = np.zeros((np.prod(grids_size), num_atoms, 3, num_atoms, 3), dtype=np.complex64)
@@ -292,7 +292,7 @@ plt.show()
 
 grid_target = sys.argv[2]
 
-q_target= np.loadtxt(grid_target+"/ibz.dat", dtype=np.float64, comments=['#', '$', '@'], usecols=range(3))
+q_target= np.loadtxt(grid_target+"/ibz0.dat", dtype=np.float64, comments=['#', '$', '@'], usecols=range(3))
 q_target_con = np.dot(np.dot(q_target, user2std), pri2con)
 q_target_ibz_con = decimal2fraction(bz.ir_moveinto(q_target_con)[0])
 q_target_ibz_pri = np.dot(q_target_ibz_con, con2pri)
@@ -394,13 +394,13 @@ savt_weight = get_savt_weight(q_points, voronoi_cells, ibz_point_indicators)
 print(savt_weight/savt_weight[0])
 
 q_target_user = np.dot(q_target_ibz_pri, std2user)
-with open(grid_target + "/ibz.dat", 'a') as f:
+with open(grid_target + "/ibz.dat", 'w') as f:
     for i in range(len(q_target_user[:, 0:dim])):
         multiplicity = round(savt_weight[i] / savt_weight[0])
         f.write("%.17g %.17g %.17g %d\n" %(q_target_user[i, 0], q_target_user[i, 1], q_target_user[i, 2], multiplicity))
 f.close()
 
-with open(grid_target + "/kpoint_to_supercell.dat", 'a') as f:
+with open(grid_target + "/kpoint_to_supercell.dat", 'w') as f:
     for i in range(len(q_target_ibz_pri[:, 0:dim])):
         f.write("%.17g %.17g %.17g %d\n" %(q_target_user[i, 0], q_target_user[i, 1], q_target_user[i, 2], i+1))
 f.close()
