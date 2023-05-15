@@ -2,7 +2,7 @@ from testfouier import *
 import numpy as np
 import sys
 
-def generate_dyn_qe(k, C, R, M):
+def generate_dyn_qe(k, C, R, alat):
 	#Note that k is in cartesian coordinates and needs to be devided by alat
 	num_cell, num_atoms, _, _, _ = C.shape
 	k_cart = k / alat
@@ -102,7 +102,7 @@ Basis vectors
 		f.write(header)
 		for i in range(len(q)):
 			# D = generate_dyn_qe_1(q[i] , C)
-			D = generate_dyn_qe(q[i] , C, R, M)
+			D = generate_dyn_qe(q[i] , C, R, alat)
 			D = np.reshape(D, (-1, 3*num_atoms))
 			# D = (np.matrix(D) + np.matrix(D).H)/2
 			D_real = np.real(D); D_imag = np.imag(D)

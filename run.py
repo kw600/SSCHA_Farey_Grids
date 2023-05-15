@@ -8,17 +8,23 @@ output_path = 'target_666'
 
 lte=['333','444']
 mixing = True
+mix_alpha = 0.5
 #sscha final dyn matrix name
 dyn_name=['dyn_pop2_','dyn_pop3_']
 
 for i in range(len(lte)):
+    #q2r for two smaller cells
+    path  = lte[i]
+    subprocess.run(["bash","q2r",path,dyn_name[i]])
+
+
+for i in range(len(lte)):
     if mixing and i==len(lte)-1:
-        subprocess.run(["python", "mix.py", str(lte),str(dyn_name)])
+        subprocess.run(["python", "mix.py", str(lte),str(dyn_name),str(mix_alpha)])
     
     path  = lte[i]
     #generate the position file and force.dat for two smaller cells
     subprocess.run(["python", "generate_R.py", path])
-    subprocess.run(["bash","q2r",path,dyn_name[i]])
     subprocess.run(["python", "normal_to_force.py", path])
     print('finish generating force.dat for '+path)
 

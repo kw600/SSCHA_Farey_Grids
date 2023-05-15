@@ -2,10 +2,9 @@ from farey2qe import *
 import sys, ast
 
 def get_D(script_dir):
-    script_dir = sys.argv[1]
-
+    #get the dynamical matrix at gamma point for smaller cells
+    
     M = np.loadtxt(script_dir + "/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=1)
-
     data = np.loadtxt(script_dir + '/force.dat')
     indices = data[:, :5].astype(int) - 1  # subtract 1 to convert to 0-based indexing
     values = data[:, 5]
@@ -22,7 +21,7 @@ def get_D(script_dir):
     R = np.empty(shape, dtype=list)
     R[indices[:, 0], indices[:, 1], indices[:, 2], indices[:, 3]] = values.tolist()
     q=np.array([0,0,0])
-    return  generate_dyn_qe(q , C, R, M)
+    return  generate_dyn_qe(q , C, R, 1)
 
 def mix(D3,D4,alpha):
     
@@ -63,6 +62,7 @@ if __name__=='__main__':
     lte_list = [str(i) for i in lte_list]
     dyn_name = ast.literal_eval(sys.argv[2])
     dyn_name = [str(i) for i in dyn_name]
+    alat=1
     D3=get_D(lte_list[0])
     D4=get_D(lte_list[1])
     alpha=float(sys.argv[3])
