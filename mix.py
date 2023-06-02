@@ -3,8 +3,7 @@ import sys, ast
 
 def get_D(script_dir):
     #get the dynamical matrix at gamma point for smaller cells
-    
-    M = np.loadtxt(script_dir + "/equilibrium.dat", dtype=np.float64, comments=['#', '$', '@'], skiprows=1, usecols=1)
+    num_atoms = np.loadtxt(lte_list[0] + "/equilibrium.dat", dtype=np.int64, comments=['#', '$', '@'], max_rows=1)
     data = np.loadtxt(script_dir + '/force.dat')
     indices = data[:, :5].astype(int) - 1  # subtract 1 to convert to 0-based indexing
     values = data[:, 5]
@@ -21,37 +20,40 @@ def get_D(script_dir):
     R = np.empty(shape, dtype=list)
     R[indices[:, 0], indices[:, 1], indices[:, 2], indices[:, 3]] = values.tolist()
     q=np.array([0,0,0])
-    return  generate_dyn_qe(q , C, R, 1)
+    D = generate_dyn_qe(q , C, R, 1)
+    return  np.reshape(D, (-1, 3*num_atoms))
 
 def mix(D3,D4,alpha):
     
     header='''Dynamical matrix file
-
-  2    2   0   8.7523599   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+File generated with the CellConstructor by Lorenzo Monacelli
+2 2 0     8.7523599000000054     0.0000000000000000     0.0000000000000000     0.0000000000000000     0.0000000000000000     0.0000000000000000
 Basis vectors
-      0.000000000    0.689862344    0.689862344
-      0.689862344    0.000000000    0.689862344
-      0.689862344    0.689862344    0.000000000
-           1  'Sn  '    108197.54609942860
-           2  'Te  '    116300.28542066456
-    1    1     -0.0000000000     -0.0000000000      0.0000000000
-    2    2      0.6898623441      0.6898623441      0.6898623441
-
+   -0.0000000000000000     0.6898687370000000     0.6898687370000000
+    0.6898687370000000    -0.0000000000000000     0.6898687370000000
+    0.6898687370000000     0.6898687370000000    -0.0000000000000000
+        1  'Sn '  108197.5460994285967899
+        2  'Te '  116300.2854206645570230
+    1     1    -0.0000000000000000     0.0000000000000000    -0.0000000000000000
+    2     2     0.6898687368000000     0.6898687368000000     0.6898687368000000
 '''
+
     with open(f'./{lte_list[-1]}/{dyn_name[-1]}1','w') as f:
         f.write(header)
         D = alpha*D3 + (1-alpha)*D4
         D_real = np.real(D); D_imag = np.imag(D)
-        f.write('\n     Dynamical  Matrix in cartesian axes\n')
+        f.write('\n     Dynamical Matrix in cartesian axes\n')
         f.write('\n')
-        f.write(f'     q = ( {q[i][0]} {q[i][1]} {q[i][2]} )\n')
+        f.write(f'    q = (     0.000000000000     0.000000000000     0.000000000000 )\n')
         f.write('\n')
+        
         for j in range(num_atoms):
             for k in range(num_atoms):
                 f.write(f'    {j+1}    {k+1}\n')
                 for l in range(3):
+                    print(j,k,l)
                     f.write(f'  {D_real[3*j+l,3*k]:>14.9f}{D_imag[3*j+l,3*k]:>14.9f}{D_real[3*j+l,3*k+1]:>14.9f}{D_imag[3*j+l,3*k+1]:>14.9f}{D_real[3*j+l,3*k+2]:>14.9f}{D_imag[3*j+l,3*k+2]:>14.9f}\n')
-        charge=get_charge(f'./{lte_list[0]}/{dyn_name[0]}1',1)
+        charge=get_charge(f'./{lte_list[0]}/{dyn_name[0]}',1)
         f.write('\n')
         if charge:
             for ll in charge:

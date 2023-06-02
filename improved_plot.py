@@ -9,13 +9,31 @@ import cellconstructor.ForceTensor
 # Import the numerical libraries and those for plotting
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os
+import sys, os, time
 
+
+def plot_gp(filename,color,LS):
+        global ax
+        d = np.loadtxt(filename)
+        nband = int((len(d[0])-1))
+        for i in range(nband):
+                if i==0:
+                        ax.plot(d[:,0],d[:,i+1]*cm_mev,color=color,ls=LS,label=f'{filename}')
+                        
+                else:
+                        ax.plot(d[:,0],d[:,i+1]*cm_mev,ls=LS,color=color)
+                      
+        xticks = [d[0,0],d[200,0],d[-1,0]]
+        # ax.set_xlim(xticks[0], xticks[1])
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(["M", "$\\Gamma$", "L"])
+        ax.legend()
+        ax.set_ylabel("Phonons [meV]");ax.set_ylim(-1,18)
+        # plt.show()
 
 def plot_bubble(filename):
+        global ax
         d = np.loadtxt(filename,skiprows=3)
-        plt.figure(dpi = 150)
-        ax = plt.gca()
         nband = int((len(d[0])-1)/2)
         for i in range(nband):
                 if i==0:
@@ -30,7 +48,7 @@ def plot_bubble(filename):
         ax.set_xticklabels(["$\\Gamma$", "L"])
         ax.legend()
         ax.set_ylabel("Phonons [meV]");ax.set_ylim(-1,18)
-        plt.show()
+        # plt.show()
 # Let us define the PATH in the brilluin zone and the total number of points
 def plot(iplot,PATH,sscha_dyn):
         global ax
@@ -61,35 +79,37 @@ def plot(iplot,PATH,sscha_dyn):
         for x in xticks:
                         # ax.axvline(x, 0, 1, color = "k", lw = 0.4)
                         axs[iplot].axhline(0, 0, 1, color = 'k', ls = ':', lw = 0.4)
-        axs[iplot].set_xlim(xticks[0], xticks[1])
+        # axs[iplot].set_xlim(xticks[0], xticks[1])
         axs[iplot].set_xticks(xticks)
         axs[iplot].set_xticklabels(xlabels)
         axs[iplot].set_ylabel("Phonons [meV]");axs[iplot].set_ylim(-1,18)
 
-
+start=time.time()
 cm_mev=1/8.066
-PATH=['GL']
+PATH=['GMKGALHAMLHK']
+PATH=['GM']
 nplot=len(PATH)
 
 N_POINTS = 200
 # Here we define the position of the special points
-SPECIAL_POINTS = {"G": [0,0,0],
-"X": [0.0,0, 0.5],
-"L": [.5, .5, .5],
-"W": [.5, .25, .75],
-"K": [3/8., 3/8., 3/4],
-"M": [0,0.5,0.5]}
+SPECIAL_POINTS = {'G': np.array([0., 0., 0.]),
+ 'M': np.array([ 0.5, -0.5,  0. ]),
+ 'K': np.array([ 0.66666667, -0.33333333,  0.        ]),
+ 'A': np.array([0. , 0. , 0.5]),
+ 'L': np.array([ 0.5, -0.5,  0.5]),
+ 'H': np.array([ 0.66666667, -0.33333333,  0.5       ])}
 
-plot_bubble('v2_v2+d3static_freq.dat')
-exit()
+
+#plot_bubble('v2_v2+d3static_freq.dat')
+#exit()
 
 
 SSCHA_DYN = ['./target_666/harmonic_666_dynf2q_','target_121212/harmonic_121212_dynf2q_']
-SSCHA_DYN = ['./444/dyn_pop3_']
-nq = [8,72]
+SSCHA_DYN = ['f2q_']
+nq = [4]
 COLOR = ['k', 'r']
 sscha_dyn = [CC.Phonons.Phonons(SSCHA_DYN[i], nq[i]) for i in range(len(SSCHA_DYN))]
-SSCHA_DYN = ['444','121212']
+SSCHA_DYN = ['222_harmonic','121212']
 
 
 if nplot==1:
@@ -105,5 +125,7 @@ else:
 
 plt.tight_layout()
 plt.savefig("dispersion.png")
+end=time.time()
+print(f'Time: {end-start} seconds')
 plt.show()
 print('finish')

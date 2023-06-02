@@ -46,3 +46,4 @@ print('finish generating force.dat for '+output_path)
 # transform the force.dat into qe format. Possible to use mpi4py to speed up the process for large supercell
 subprocess.run(["python", "farey2qe.py", output_path])
 print('finish generating qe format dynamical for '+output_path)
+
