@@ -85,34 +85,37 @@ if __name__ == "__main__":
     with open('harmonic1','r') as f3:
         lines=f3.readlines()
         alat = float(lines[2].split()[3])
+        ntype= int(lines[2].split()[0])
+        natom= int(lines[2].split()[1])
         for i in range(len(lines)):
             if 'Basis vectors' in lines[i]:
                 index = i
                 L = np.loadtxt(lines[i+1:i+4])
                 prim_latt_vecs = L * alat
                 break
-        atom=1
-        atom_list=[]
-        with open('equilibrium.dat', 'w') as f_atoms:
-            for i in range(index+4,len(lines)):
-                if len(lines[i].split())==0:
-                    continue
-                elif int(lines[i].split()[0])==atom:
-                    atom+=1
-                else:
-                    natom = atom - 1
+
+        atom_list=[];mass=[]
+        for i in range(7,7+ntype):
+            l = lines[i].split()
+            atom_list.append(l[1])
+            mass.append(l[-1])
+    atom_prim_cart=[]
+    with open('equilibrium.dat', 'w') as f_atoms:
                     f_atoms.write(f'{natom}\n')
                     count=0
-                    for j in range(i,len(lines)):
+                    for j in range(7+ntype,len(lines)):
+                        # print(lines[j])
                         if len(lines[j].split())== 5:
-                            atom_list.append(lines[j].split()[2:5])
-                            f_atoms.write(f'{lines[index+4+count].split()[1][1:]} {lines[index+4+count].split()[3]} {alat*float(lines[j].split()[2])} {alat*float(lines[j].split()[3])} {alat*float(lines[j].split()[4])}\n')
+                            atom_prim_cart.append(lines[j].split()[2:5])
+                            atom = atom_list[int(lines[j].split()[1])-1].replace("'","")
+                            m = mass[int(lines[j].split()[1])-1]
+                            f_atoms.write(f'{atom} {m} {alat*float(lines[j].split()[2])} {alat*float(lines[j].split()[3])} {alat*float(lines[j].split()[4])}\n')
+                            count+=1
                         else:
-                            atom_prim_cart = np.array(atom_list,dtype=float)*alat
                             break
-                        count+=1
-                    break
-        
+    
+    atom_prim_cart = np.array(atom_prim_cart,dtype=float)*alat
+    # print(atom_prim_cart)
     with open('harmonic0','r') as f4:
         lines=f4.readlines()
         q=np.array(lines[0].split(),dtype=int)
@@ -135,6 +138,7 @@ if __name__ == "__main__":
             f1.write(f'{prim_latt_vecs[i,0]:.12f} {prim_latt_vecs[i,1]:.12f} {prim_latt_vecs[i,2]:.12f}\n')
         
     basis =len(atom_prim_cart); no_prim_cells=q1*q2*q3
+    print('no_prim_cells',no_prim_cells)
     delta_prim = np.zeros((8, 3, basis, basis, no_prim_cells))
     super_latt_vecs=np.array([prim_latt_vecs[0]*q1, prim_latt_vecs[1]*q2, prim_latt_vecs[2]*q3])
 
@@ -143,6 +147,7 @@ if __name__ == "__main__":
         # for i_atom in range(1):
             for j_atom in range(basis):
             # for j_atom in range(4,5):
+                # print(basis,'basis')
                 delta_r_corr = atom_prim_cart[i_atom] - atom_prim_cart[j_atom]
                 for i_cell in range(no_prim_cells):
                 # for i_cell in range(1,2):
